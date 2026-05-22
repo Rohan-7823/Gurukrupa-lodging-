@@ -1,0 +1,6 @@
+{
+  "name": "Gurukrupa Lodging",
+  "description": "Premium, fully responsive booking platform for Gurukrupa Lodging, featuring real-time room booking, an immersive customer web experience, and a powerful multi-functional admin dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
