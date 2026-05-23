@@ -212,7 +212,12 @@ export default function AdminPanel({
         // Fallback reviews list from active state or localStorage cache
         const cachedReviews = localStorage.getItem('gurukrupa_reviews');
         if (cachedReviews) {
-          setAllReviews(JSON.parse(cachedReviews));
+          try {
+            setAllReviews(JSON.parse(cachedReviews));
+          } catch (e) {
+            console.warn("Corrupted reviews JSON cache found in Admin panel fallback.", e);
+            setAllReviews(reviews);
+          }
         } else {
           setAllReviews(reviews);
         }
@@ -334,12 +339,18 @@ export default function AdminPanel({
         // Direct Local Storage update
         const roomsCachedStr = localStorage.getItem('gurukrupa_rooms');
         if (roomsCachedStr) {
-          const rList = JSON.parse(roomsCachedStr);
-          const rIdx = rList.findIndex((item: any) => item.id === editingRoom.id);
-          if (rIdx !== -1) {
-            rList[rIdx] = { ...rList[rIdx], ...payload };
-            localStorage.setItem('gurukrupa_rooms', JSON.stringify(rList));
-            isSuccess = true;
+          try {
+            const rList = JSON.parse(roomsCachedStr);
+            if (Array.isArray(rList)) {
+              const rIdx = rList.findIndex((item: any) => item.id === editingRoom.id);
+              if (rIdx !== -1) {
+                rList[rIdx] = { ...rList[rIdx], ...payload };
+                localStorage.setItem('gurukrupa_rooms', JSON.stringify(rList));
+                isSuccess = true;
+              }
+            }
+          } catch (e) {
+            console.warn("Could not parse rooms cache when saving room editing changes.", e);
           }
         }
         
@@ -379,7 +390,14 @@ export default function AdminPanel({
 
         // Direct Local Storage insert
         const roomsCachedStr = localStorage.getItem('gurukrupa_rooms');
-        const rList = roomsCachedStr ? JSON.parse(roomsCachedStr) : [];
+        let rList = [];
+        try {
+          rList = roomsCachedStr ? JSON.parse(roomsCachedStr) : [];
+          if (!Array.isArray(rList)) rList = [];
+        } catch (e) {
+          console.warn("Corrupted rooms list cache. Resetting in creation path.", e);
+          rList = [];
+        }
         rList.push(newRoomObject);
         localStorage.setItem('gurukrupa_rooms', JSON.stringify(rList));
         isSuccess = true;
@@ -446,12 +464,18 @@ export default function AdminPanel({
     // Direct local state storage update fallback
     const roomsCachedStr = localStorage.getItem('gurukrupa_rooms');
     if (roomsCachedStr) {
-      const rList = JSON.parse(roomsCachedStr);
-      const rIdx = rList.findIndex((r: any) => r.id === item.id);
-      if (rIdx !== -1) {
-        rList[rIdx].status = nextText;
-        localStorage.setItem('gurukrupa_rooms', JSON.stringify(rList));
-        isSuccess = true;
+      try {
+        const rList = JSON.parse(roomsCachedStr);
+        if (Array.isArray(rList)) {
+          const rIdx = rList.findIndex((r: any) => r.id === item.id);
+          if (rIdx !== -1) {
+            rList[rIdx].status = nextText;
+            localStorage.setItem('gurukrupa_rooms', JSON.stringify(rList));
+            isSuccess = true;
+          }
+        }
+      } catch (e) {
+        console.warn("Could not parse rooms cache when toggling status.", e);
       }
     }
 
@@ -483,10 +507,16 @@ export default function AdminPanel({
     // Direct local state storage prune fallback
     const roomsCachedStr = localStorage.getItem('gurukrupa_rooms');
     if (roomsCachedStr) {
-      const rList = JSON.parse(roomsCachedStr);
-      const updatedList = rList.filter((r: any) => r.id !== id);
-      localStorage.setItem('gurukrupa_rooms', JSON.stringify(updatedList));
-      isSuccess = true;
+      try {
+        const rList = JSON.parse(roomsCachedStr);
+        if (Array.isArray(rList)) {
+          const updatedList = rList.filter((r: any) => r.id !== id);
+          localStorage.setItem('gurukrupa_rooms', JSON.stringify(updatedList));
+          isSuccess = true;
+        }
+      } catch (e) {
+        console.warn("Could not parse rooms cache during room deletion.", e);
+      }
     }
 
     if (isSuccess) {
@@ -521,12 +551,18 @@ export default function AdminPanel({
     // Direct local bookings caching update
     const bookingsCachedStr = localStorage.getItem('gurukrupa_bookings');
     if (bookingsCachedStr) {
-      const bList = JSON.parse(bookingsCachedStr);
-      const bIdx = bList.findIndex((item: any) => item.id === b.id);
-      if (bIdx !== -1) {
-        bList[bIdx] = { ...bList[bIdx], ...payload };
-        localStorage.setItem('gurukrupa_bookings', JSON.stringify(bList));
-        isSuccess = true;
+      try {
+        const bList = JSON.parse(bookingsCachedStr);
+        if (Array.isArray(bList)) {
+          const bIdx = bList.findIndex((item: any) => item.id === b.id);
+          if (bIdx !== -1) {
+            bList[bIdx] = { ...bList[bIdx], ...payload };
+            localStorage.setItem('gurukrupa_bookings', JSON.stringify(bList));
+            isSuccess = true;
+          }
+        }
+      } catch (e) {
+        console.warn("Could not parse bookings cache during status update.", e);
       }
     }
 
@@ -555,12 +591,18 @@ export default function AdminPanel({
     // Direct local reviews caching update
     const reviewsCachedStr = localStorage.getItem('gurukrupa_reviews');
     if (reviewsCachedStr) {
-      const revList = JSON.parse(reviewsCachedStr);
-      const rIdx = revList.findIndex((item: any) => item.id === revId);
-      if (rIdx !== -1) {
-        revList[rIdx].approved = flag;
-        localStorage.setItem('gurukrupa_reviews', JSON.stringify(revList));
-        isSuccess = true;
+      try {
+        const revList = JSON.parse(reviewsCachedStr);
+        if (Array.isArray(revList)) {
+          const rIdx = revList.findIndex((item: any) => item.id === revId);
+          if (rIdx !== -1) {
+            revList[rIdx].approved = flag;
+            localStorage.setItem('gurukrupa_reviews', JSON.stringify(revList));
+            isSuccess = true;
+          }
+        }
+      } catch (e) {
+        console.warn("Could not parse reviews cache during approval mutator.", e);
       }
     }
 

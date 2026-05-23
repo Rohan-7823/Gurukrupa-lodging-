@@ -173,7 +173,16 @@ export default function BookingFlow({
 
         // Cache simulated booking inside local storage immediately
         const cachedStr = localStorage.getItem('gurukrupa_bookings');
-        const bookingsList = cachedStr ? JSON.parse(cachedStr) : [];
+        let bookingsList: Booking[] = [];
+        try {
+          bookingsList = cachedStr ? JSON.parse(cachedStr) : [];
+          if (!Array.isArray(bookingsList)) {
+            bookingsList = [];
+          }
+        } catch (e) {
+          console.warn("Corrupted bookings cache in BookingFlow. Resetting list.", e);
+          bookingsList = [];
+        }
         bookingsList.push(tempBooking);
         localStorage.setItem('gurukrupa_bookings', JSON.stringify(bookingsList));
       }
@@ -218,7 +227,16 @@ export default function BookingFlow({
           tempBooking.status = 'Confirmed';
 
           const cachedStr = localStorage.getItem('gurukrupa_bookings');
-          const bookingsList = cachedStr ? JSON.parse(cachedStr) : [];
+          let bookingsList: Booking[] = [];
+          try {
+            bookingsList = cachedStr ? JSON.parse(cachedStr) : [];
+            if (!Array.isArray(bookingsList)) {
+              bookingsList = [];
+            }
+          } catch (e) {
+            console.warn("Corrupted bookings cache in BookingFlow payment fallback.", e);
+            bookingsList = [];
+          }
           // Replace or append
           const idx = bookingsList.findIndex((b: Booking) => b.id === tempBooking!.id);
           if (idx !== -1) {

@@ -47,8 +47,14 @@ export default function CustomerDashboard({
       if (!data || data.length === 0) {
         const cachedStr = localStorage.getItem('gurukrupa_bookings');
         if (cachedStr) {
-          const allB = JSON.parse(cachedStr);
-          data = allB.filter((b: any) => b.guestEmail.toLowerCase() === user.email.toLowerCase());
+          try {
+            const allB = JSON.parse(cachedStr);
+            if (Array.isArray(allB)) {
+              data = allB.filter((b: any) => b && b.guestEmail && b.guestEmail.toLowerCase() === user.email.toLowerCase());
+            }
+          } catch (e) {
+            console.warn("Corrupted bookings JSON loaded in CustomerDashboard retrieval path.", e);
+          }
         }
       }
 
@@ -86,13 +92,19 @@ export default function CustomerDashboard({
     // Always find and update client-side localStorage to remain perfectly congruent
     const cachedStr = localStorage.getItem('gurukrupa_bookings');
     if (cachedStr) {
-      const allB = JSON.parse(cachedStr);
-      const idx = allB.findIndex((b: any) => b.id === bookingId);
-      if (idx !== -1) {
-        allB[idx].status = 'Cancelled';
-        allB[idx].paymentStatus = 'Refunded';
-        localStorage.setItem('gurukrupa_bookings', JSON.stringify(allB));
-        success = true;
+      try {
+        const allB = JSON.parse(cachedStr);
+        if (Array.isArray(allB)) {
+          const idx = allB.findIndex((b: any) => b.id === bookingId);
+          if (idx !== -1) {
+            allB[idx].status = 'Cancelled';
+            allB[idx].paymentStatus = 'Refunded';
+            localStorage.setItem('gurukrupa_bookings', JSON.stringify(allB));
+            success = true;
+          }
+        }
+      } catch (e) {
+        console.warn("Could not parse bookings in cancellation caching update.", e);
       }
     }
 

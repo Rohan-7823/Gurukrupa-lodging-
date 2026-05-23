@@ -202,29 +202,26 @@ export default function App() {
   // Navigation Routing States
   const [currentTab, setCurrentTab] = useState<string>('home');
   
+  // Safe JSON extraction helper that checks content-type and avoids blank screen HTML errors
+  const safeLoad = <T,>(key: string, fallback: T): T => {
+    try {
+      const cached = localStorage.getItem(key);
+      if (!cached) return fallback;
+      return JSON.parse(cached) as T;
+    } catch (e) {
+      console.warn(`Error parsing key ${key} from localStorage, falling back to default reset.`, e);
+      return fallback;
+    }
+  };
+
   // App wide Data States (Initialised from local cache fallbacks for pure offline Netlify routing)
-  const [rooms, setRooms] = useState<Room[]>(() => {
-    const cached = localStorage.getItem('gurukrupa_rooms');
-    return cached ? JSON.parse(cached) : STATIC_ROOMS;
-  });
-  const [bookings, setBookings] = useState<Booking[]>(() => {
-    const cached = localStorage.getItem('gurukrupa_bookings');
-    return cached ? JSON.parse(cached) : STATIC_BOOKINGS;
-  });
-  const [reviews, setReviews] = useState<Review[]>(() => {
-    const cached = localStorage.getItem('gurukrupa_reviews');
-    return cached ? JSON.parse(cached) : STATIC_REVIEWS;
-  });
-  const [settings, setSettings] = useState<SiteSettings | null>(() => {
-    const cached = localStorage.getItem('gurukrupa_settings');
-    return cached ? JSON.parse(cached) : STATIC_SETTINGS;
-  });
+  const [rooms, setRooms] = useState<Room[]>(() => safeLoad('gurukrupa_rooms', STATIC_ROOMS));
+  const [bookings, setBookings] = useState<Booking[]>(() => safeLoad('gurukrupa_bookings', STATIC_BOOKINGS));
+  const [reviews, setReviews] = useState<Review[]>(() => safeLoad('gurukrupa_reviews', STATIC_REVIEWS));
+  const [settings, setSettings] = useState<SiteSettings | null>(() => safeLoad('gurukrupa_settings', STATIC_SETTINGS));
 
   // Auth States
-  const [user, setUser] = useState<UserProfile | null>(() => {
-    const cached = localStorage.getItem('gurukrupa_user');
-    return cached ? JSON.parse(cached) : null;
-  });
+  const [user, setUser] = useState<UserProfile | null>(() => safeLoad('gurukrupa_user', null));
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authEmail, setAuthEmail] = useState('');
   const [authName, setAuthName] = useState('');
