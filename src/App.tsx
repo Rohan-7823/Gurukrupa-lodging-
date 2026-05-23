@@ -760,10 +760,10 @@ export default function App() {
 
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     {[
-                      { name: "UNESCO Ellora Caves", dist: "4.0 KM Away", desc: "World heritage complex featuring rock-cut temples, shrines and sculpture caves.", img: "https://images.unsplash.com/photo-1603262110263-fb0112e7cc33?auto=format&fit=crop&w=800&q=80" },
-                      { name: "Bhadra Maruti Temple", dist: "1.5 KM Away", desc: "Sacred temple featuring a legendary unique reclining posture of Lord Hanuman.", img: "https://images.unsplash.com/photo-1601582589907-f92af5ed9db8?auto=format&fit=crop&w=800&q=80" },
-                      { name: "Daulatabad Majestic Fort", dist: "11 KM Away", desc: "Sixteenth-century medieval hill fortress with dark mazes, ramparts, and moat setups.", img: "https://images.unsplash.com/photo-1605649487212-47bdab064bb7?auto=format&fit=crop&w=800&q=80" },
-                      { name: "Ghrishneshwar Jyotirlinga", dist: "4.5 KM Away", desc: "Ancient red-stone temple, revered as the 12th holy Jyotirlinga Shiva shrine in India.", img: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80" }
+                      { name: "UNESCO Ellora Caves", dist: "4.0 KM Away", desc: "World heritage complex featuring rock-cut temples, shrines and sculpture caves.", img: "/src/assets/images/ellora_caves_1779508550723.png" },
+                      { name: "Bhadra Maruti Temple", dist: "1.5 KM Away", desc: "Sacred temple featuring a legendary unique reclining posture of Lord Hanuman.", img: "/src/assets/images/bhadra_maruti_temple_1779508514809.png" },
+                      { name: "Daulatabad Majestic Fort", dist: "11 KM Away", desc: "Sixteenth-century medieval hill fortress with dark mazes, ramparts, and moat setups.", img: "/src/assets/images/daulatabad_fort_1779508534046.png" },
+                      { name: "Ghrishneshwar Jyotirlinga", dist: "4.5 KM Away", desc: "Ancient red-stone temple, revered as the 12th holy Jyotirlinga Shiva shrine in India.", img: "/src/assets/images/grishneshwar_temple_1779508761195.png" }
                     ].map((att, idx) => (
                       <div key={idx} className="relative aspect-[16/11] rounded-xl overflow-hidden group shadow border border-slate-950">
                         <img 
